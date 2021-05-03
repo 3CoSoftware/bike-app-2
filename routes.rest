@@ -1,0 +1,5 @@
+GET http://localhost:5000/riders/paul/ridenotes
+
+###
+
+DELETE http://localhost:5000/riders/paul/ridenotes/60847fd7b062802b70618cc2
