@@ -2,4 +2,13 @@ GET http://localhost:5000/riders/paul/ridenotes
 
 ###
 
-DELETE http://localhost:5000/riders/paul/ridenotes/60847fd7b062802b70618cc2
+PATCH http://localhost:5000/riders/paul/ridenotes
+Content-Type: application/json
+
+{
+    "rideName": "ride 2",
+    "notes": "gooooooood",
+    "weather": "sunny",
+    "weight": "160",
+    "restingBP": "60"
+}

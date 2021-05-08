@@ -104,7 +104,7 @@ router.patch('/:username/ridenotes', async (req, res) => {
 
         await rider.rideNotes.push(req.body)
         await rider.save()
-        res.json(rider.rideNotes)
+        res.json(rider.rideNotes[rider.rideNotes.length - 1])
         
 
     } catch (err) {

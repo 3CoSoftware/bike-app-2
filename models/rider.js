@@ -8,7 +8,13 @@ const rideNoteSchema = new mongoose.Schema({
     notes: String,
     weather: String,
     weight: String,
-    restingBP: String
+    restingBP: String,
+    heartrate: String,
+    sleep: String,
+    dietYesterday: String,
+    enthusiasm: String,
+    rideType: String, 
+    descriptiveName: String 
 })
 
 

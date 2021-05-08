@@ -1,10 +1,9 @@
 const mongoose = require('mongoose')
 
-const goalSchema = new mongoose.Schema({
-    day: String,
+const rideSchema = new mongoose.Schema({
+    date: String,
     distance: String,
-    type: String,
-    avgSpeed: String,   
+    rideType: String,   
     status: String
 })
 
@@ -14,7 +13,7 @@ const trainingPlanSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    goals: [goalSchema]
+    rides: [rideSchema]
 
 })
 
