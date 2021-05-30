@@ -47,14 +47,24 @@ router.patch('/:id', async (req, res) => {
     }
 })
 
+// Delete a trainingplan by ID 
+router.delete('/:id', async (req, res) => {
+    try {
+        await TrainingPlan.deleteOne({ _id: req.params.id })
+        res.json({ message: 'Deleted plan'})
+    } catch (err) {
+        return res.status(400).json({message: err.message })
+    }
+})
+
 
 // add a goal for a training plan 
-router.patch('/:id/goals', async (req, res) => {
+router.patch('/:id/rides', async (req, res) => {
     try {
         const trainingPlan = await TrainingPlan.findOne({ _id: req.params.id})
 
 
-        await trainingPlan.goals.push(req.body)
+        await trainingPlan.rides.push(req.body)
         await trainingPlan.save()
         res.send(trainingPlan)
         
@@ -64,17 +74,23 @@ router.patch('/:id/goals', async (req, res) => {
 })
 
 // edit a goal by training plan id and goal id 
-router.patch('/:id/goals/:goalid', async (req, res) => {
+router.patch('/:id/rides/:rideid', async (req, res) => {
     try {
         const trainingPlan = await TrainingPlan.findById(req.params.id)
 
-        const goal = await trainingPlan.goals.id(req.params.goalid)
+        const goal = await trainingPlan.rides.id(req.params.rideid)
 
-        if (req.body.description) {
-            goal.description = req.body.description
+        if (req.body.date) {
+            goal.date = req.body.date
         }
-        if (req.body.completed) {
-            goal.completed = req.body.completed
+        if (req.body.distance) {
+            goal.distance = req.body.distance
+        }
+        if (req.body.rideType) {
+            goal.rideType = req.body.rideType
+        }
+        if (req.body.status) {
+            goal.status = req.body.status
         }
 
         await trainingPlan.save()

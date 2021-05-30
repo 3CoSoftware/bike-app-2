@@ -24,6 +24,9 @@ app.use('/riders', ridersRoutes)
 const trainingPlansRoutes = require('./routes/trainingPlans')
 app.use('/trainingplans', trainingPlansRoutes)
 
+const authRoutes = require('./routes/auth')
+app.use('/auth', authRoutes)
+
 // const PORT = process.env.PORT || 5000
 
 app.listen(5000, () => console.log('Server started'))

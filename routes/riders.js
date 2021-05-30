@@ -2,6 +2,10 @@ const express = require('express')
 const Rider = require('../models/rider')
 const TrainingPlan = require('../models/trainingPlan')
 const router = express.Router()
+const bcrypt = require('bcryptjs')
+require('dotenv').config()
+const jwt = require('jsonwebtoken')
+const auth = require('../middleware/auth')
 
 // Get all riders
 router.get('/', async (req, res) => {
@@ -31,17 +35,52 @@ router.get('/:username', async (req, res) => {
 
 // Create rider
 router.post('/', async (req, res) => {
-    const rider = new Rider({
-        username: req.body.username,
-        units: req.body.units,
-        lang: req.body.lang,
-    })
-    try {
-        const newRider = await rider.save()
-        res.status(201).json(newRider)
-    } catch (err) {
-        return res.status(400).json({ message: err.message })
+    const { username, password, units, lang } = req.body
+
+    // simple validation 
+    if (!username || !password || !units || !lang) {
+        return res.status(400).json({ msg: 'Please enter all fields'})
     }
+
+    // Check for existing user 
+    Rider.findOne({ username })
+    .then(user => {
+        if(user) return res.status(400).json({ msg: 'Rider already exists'})
+
+        const newRider = new Rider({
+            username, 
+            password, 
+            units,
+            lang 
+        })
+
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newRider.password, salt, (err, hash) => {
+                if(err) throw err
+
+                newRider.password = hash 
+                newRider.save()
+                .then(rider => {
+                    jwt.sign(
+                        { id: rider.id },
+                        process.env.JWT_SECRET,
+                        (err, token) => {
+                            if(err) throw err 
+
+                            res.json({
+                                token,
+                                rider: {
+                                    username: rider.username,
+                                    units: rider.units,
+                                    lang: rider.lang
+                                }
+                            })
+                        }
+                    )    
+                })
+            })
+        })
+    })
 })
 
 // Update one rider by username 
@@ -93,6 +132,20 @@ router.get('/:username/ridenotes', async (req, res) => {
     }
 })
 
+// Getting a riders training plans 
+router.get('/:username/trainingplans', async (req, res) => {
+    try {
+        const rider = await Rider.findOne({ username: req.params.username }).populate('trainingPlans')
+
+        if (rider == null) {
+            return res.status(404).json({ message: 'Cannot find user' })
+        }
+        res.json(rider.trainingPlans)
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+})
+
 // Add a ride note for a rider by username 
 router.patch('/:username/ridenotes', async (req, res) => {
     try {
@@ -122,7 +175,13 @@ router.get('/:username/ridenotes/:ridename', async (req, res) => {
         }
         
         const rideNote = await rider.rideNotes.filter((rideNote) => rideNote.rideName === req.params.ridename )
-        res.send(rideNote)
+        
+        if (rideNote[0]) {
+            res.send(rideNote[0])
+        } else {
+            res.send(null)
+        }
+        
 
 
     } catch (err) {
@@ -157,15 +216,34 @@ router.patch('/:username/ridenotes/:id', async (req, res) => {
         if (req.body.restingBP) {
             rideNote.restingBP = req.body.restingBP
         }
+        if (req.body.heartrate) {
+            rideNote.heartrate = req.body.heartrate
+        }
+        if (req.body.sleep) {
+            rideNote.sleep = req.body.sleep
+        }
+        if (req.body.dietYesterday) {
+            rideNote.dietYesterday = req.body.dietYesterday
+        }
+        if (req.body.enthusiasm) {
+            rideNote.enthusiasm = req.body.enthusiasm
+        }
+        if (req.body.rideType) {
+            rideNote.rideType = req.body.rideType
+        }
+        if (req.body.descriptiveName) {
+            rideNote.descriptiveName = req.body.descriptiveName
+        }
 
         await rider.save()
-        res.send(rider)
+        res.send(rideNote)
 
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }
 })
 
+// Delete a ridenote by id 
 router.delete('/:username/ridenotes/:id', async (req, res) => {
     try {
         const rider = await Rider.findOne({ username: req.params.username })
@@ -204,20 +282,5 @@ router.post('/:username/trainingplans', async (req, res) => {
 
 })
 
-
-// get only a users prefernces (units and lang)
-router.get('/:username/prefs', async (req, res) => {
-    try {
-        const rider = await Rider.findOne({ username: req.params.username })
-
-        if (rider == null) {
-            return res.status(404).json({ message: 'Cannot find user' })
-        }
-
-        res.json({ units: rider.units, lang: rider.lang })
-    } catch (err) {
-        return res.status(500).json({ message: err.message })
-    }
-})
 
 module.exports = router 

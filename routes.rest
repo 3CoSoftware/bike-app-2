@@ -1,14 +1,24 @@
-GET http://localhost:5000/riders/paul/ridenotes
+GET http://localhost:5000/riders/bob/trainingplans
+
 
 ###
 
-PATCH http://localhost:5000/riders/paul/ridenotes
+DELETE http://localhost:5000/riders/60807221c529202776977627
+
+
+###
+ 
+POST http://localhost:5000/riders/bob/trainingplans
 Content-Type: application/json
 
 {
-    "rideName": "ride 2",
-    "notes": "gooooooood",
-    "weather": "sunny",
-    "weight": "160",
-    "restingBP": "60"
+    "planName": "plan a"
 }
+
+###
+
+DELETE http://localhost:5000/trainingplans/607f3de887dddba25bd96258
+
+###
+
+GET http://localhost:5000/trainingplans/60b2a5cf526e194729c97790
