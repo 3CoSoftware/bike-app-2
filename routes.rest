@@ -1,5 +1,4 @@
-GET http://localhost:5000/riders/bob/trainingplans
-
+GET http://localhost:5000/riders
 
 ###
 
