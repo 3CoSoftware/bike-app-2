@@ -18,6 +18,10 @@ db.once('open', () => console.log('Connected to db'))
 
 app.use(express.json())
 
+app.get('/health', (req, res) => {
+    res.send("It Works!")
+})
+
 const ridersRoutes = require('./routes/riders')
 app.use('/riders', ridersRoutes)
 
