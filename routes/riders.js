@@ -3,7 +3,7 @@ const Rider = require('../models/rider')
 const TrainingPlan = require('../models/trainingPlan')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
-require('dotenv').config()
+var constants = require('../constants')
 const jwt = require('jsonwebtoken')
 const auth = require('../middleware/auth')
 
@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
                 .then(rider => {
                     jwt.sign(
                         { id: rider.id },
-                        process.env.JWT_SECRET,
+                        constants.secret,
                         (err, token) => {
                             if(err) throw err 
 
