@@ -1,4 +1,3 @@
-require('dotenv').config()
 
 const express = require('express')
 const cors = require('cors')
@@ -11,7 +10,7 @@ app.use(cors())
 
 const mongoose = require('mongoose')
 
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+mongoose.connect("mongodb://mongo:27017/bike-app", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to db'))

@@ -2,7 +2,7 @@ const express = require('express')
 const Rider = require('../models/rider')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
-require('dotenv').config()
+var constants = require('../constants')
 const jwt = require('jsonwebtoken')
 const auth = require('../middleware/auth')
 const { get } = require('./riders')
@@ -25,7 +25,7 @@ router.post('/', (req, res) => {
 
             jwt.sign(
                 { id: user.id },
-                process.env.JWT_SECRET,
+                constants.secret,
                 (err, token) => {
                     if(err) throw err 
 
