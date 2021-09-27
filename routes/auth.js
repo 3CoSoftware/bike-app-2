@@ -45,6 +45,7 @@ router.post('/', (req, res) => {
 })
 
 router.get('/user', auth, (req, res) => {
+    console.log("received /user request")
     Rider.findById(req.user.id)
     .select('-password')
     .then(rider => res.json(rider))

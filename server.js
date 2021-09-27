@@ -18,6 +18,7 @@ db.once('open', () => console.log('Connected to db'))
 app.use(express.json())
 
 app.get('/health', (req, res) => {
+    console.log("received /health request");
     res.send("It Works!")
 })
 
