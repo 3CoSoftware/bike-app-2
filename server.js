@@ -1,6 +1,7 @@
 
 const express = require('express')
 const cors = require('cors')
+const constants = require('./constants')
 
 const app = express()
 
@@ -10,7 +11,8 @@ app.use(cors())
 
 const mongoose = require('mongoose')
 
-mongoose.connect("mongodb://mongo:27017/bike-app", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+mongoose.connect(constants.database, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to db'))
